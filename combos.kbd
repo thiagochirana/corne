@@ -37,13 +37,14 @@ p j => MACRO(small)
 p u => MACRO(long)
 p m => MACRO(all_info)
 y u => MACRO(copia_linha)
-p o => MACRO(print)
+p k => MACRO(print)
 m , .  => MACRO(seta)
+A S D F => CAPS
 
 // Mais exemplos (tire o // para usar):
 // S D F    => CTRL(Z)       // três teclas: desfazer
 // J K L    => MACRO(assinatura) // toca a macro [assinatura] do macros.kbd
-// A S D F  => CAPS          // quatro teclas
+
 // M ,      => Ç             // caractere com acento/ç
 // K(3,5) K(3,6) => MO(setup)    // ENT + SPC (polegares) segurados = camada setup
 //

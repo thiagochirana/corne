@@ -47,8 +47,8 @@ CTRL    Z    X    C    V      B                  N    M    ,    .    /    LT(set
 [num]
 '       1    2    3    4    5          6    7    8    9    0    -
 SHIFT   [    ]    {    }    XXX        LEFT DOWN UP   RGHT =    +
-CTRL    |    XXX  XXX  XXX  XXX        HOME PGDN PGUP END  XXX  TO(base)
-                TAB TO(sym) ENT        SPC MO(setup) WIN
+CTRL    |    XXX  (    )    XXX        HOME PGDN PGUP END  XXX  TO(base)
+             TAB  TO(sym)   ENT        SPC MO(setup) WIN
 
 [sym]
 ESC     !    @    #    $    %          ^    &    *    (    )    BSPC
