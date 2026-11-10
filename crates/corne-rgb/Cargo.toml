@@ -1,0 +1,8 @@
+[package]
+name = "corne-rgb"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+corne-core = { path = "../corne-core" }

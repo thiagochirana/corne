@@ -1,0 +1,56 @@
+[package]
+name = "corne-fw"
+version = "0.1.0"
+edition = "2024"
+description = "Firmware Rust (Embassy) para Corne V3 3x6 com RP2040"
+publish = false
+
+# O firmware é um workspace próprio porque compila para thumbv6m-none-eabi,
+# enquanto as crates em ../crates são testadas no PC (host).
+[workspace]
+
+[features]
+default = ["rgb", "oled"]
+# Lado da metade (escolha exatamente um; scripts/build.sh gera os dois).
+left = []
+right = []
+# Complementos. Para tirar um: --no-default-features --features left,rgb
+rgb = ["dep:corne-rgb", "dep:smart-leds"]
+oled = ["dep:corne-oled"]
+
+[dependencies]
+corne-core = { path = "../crates/corne-core" }
+corne-rgb = { path = "../crates/corne-rgb", optional = true }
+corne-oled = { path = "../crates/corne-oled", optional = true }
+
+# boot2-w25q080 serve para a maioria dos clones (flash W25Q16). Se a placa não
+# iniciar depois de gravar, troque por "boot2-generic-03h".
+embassy-rp = { version = "0.10", features = ["rp2040", "time-driver", "critical-section-impl", "boot2-w25q080"] }
+embassy-executor = { version = "0.10", features = ["platform-cortex-m", "executor-thread"] }
+embassy-time = "0.5"
+embassy-usb = "0.6"
+embassy-sync = "0.8"
+embassy-futures = "0.1"
+usbd-hid = "0.10"
+smart-leds = { version = "0.4", optional = true }
+heapless = "0.9"
+cortex-m = { version = "0.7", features = ["inline-asm"] }
+cortex-m-rt = "0.7"
+static_cell = "2.1"
+pio = "0.3" # mesma versão usada pelo embassy-rp
+fixed = "1.31"
+# O Cortex-M0+ não tem CAS atômico; usa seções críticas.
+portable-atomic = { version = "1.15", features = ["critical-section"] }
+
+[build-dependencies]
+corne-core = { path = "../crates/corne-core" }
+
+[profile.release]
+opt-level = "s"
+lto = "fat"
+codegen-units = 1
+debug = 2
+incremental = false
+
+[profile.dev]
+opt-level = 1

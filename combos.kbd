@@ -1,0 +1,51 @@
+// =============================================================================
+//  Combos: duas ou mais teclas apertadas juntas => uma ação
+// =============================================================================
+//
+//  Formato:   TECLAS... => AÇÃO
+//
+//  - Quantas teclas quiser (2 a 16), em qualquer ordem, apertadas dentro da
+//    janela `term` (ms).
+//  - As teclas são escritas como estão no keymap.kbd (maiúsculas ou minúsculas,
+//    tanto faz): na camada base, ou na
+//    camada da seção [nome]. O combo usa a POSIÇÃO delas.
+//  - Para uma posição exata: K(linha, coluna), linhas 0..3 e colunas 0..11
+//    (os polegares são K(3,3) a K(3,8)).
+//  - A ação aceita tudo o que o keymap.kbd aceita: teclas, atalhos (CTRL(Z)),
+//    acentos (o `host` vem do keymap.kbd), camadas (MO, TG...), RGB_*, BOOT
+//    e MACRO(nome), que toca uma macro do macros.kbd.
+//  - Combos antes de qualquer [seção] valem em todas as camadas. Depois de um
+//    [nome], valem só quando essa camada estiver no topo.
+//
+//  Como funciona: uma tecla que faz parte de algum combo espera até `term` ms
+//  pelas outras. Se o combo fecha, a ação sai (e é solta quando a primeira
+//  tecla do combo for solta). Se não fecha, as teclas saem normalmente, na
+//  ordem. Teclas que não estão em nenhum combo não têm atraso nenhum.
+//  Janela menor = menos atraso nas teclas do combo, mas exige apertar mais junto.
+//
+//  `idle`: no meio de uma palavra (última letra há menos de `idle` ms), nenhum
+//  combo começa e as teclas saem como texto. Assim "po" de "tempo" não vira o
+//  combo `p o`. Para disparar um combo, faça uma pausa curta antes. 0 desliga.
+//
+//  Confira com: make keymap
+
+term = 40
+idle = 150
+
+, . => :
+p j => MACRO(small)
+p u => MACRO(long)
+p m => MACRO(all_info)
+y u => MACRO(copia_linha)
+p o => MACRO(print)
+m , .  => MACRO(seta)
+
+// Mais exemplos (tire o // para usar):
+// S D F    => CTRL(Z)       // três teclas: desfazer
+// J K L    => MACRO(assinatura) // toca a macro [assinatura] do macros.kbd
+// A S D F  => CAPS          // quatro teclas
+// M ,      => Ç             // caractere com acento/ç
+// K(3,5) K(3,6) => MO(setup)    // ENT + SPC (polegares) segurados = camada setup
+//
+// [num]                      // só na camada num:
+// LEFT DOWN => CTRL(Z)

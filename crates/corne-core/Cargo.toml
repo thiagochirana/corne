@@ -1,0 +1,9 @@
+[package]
+name = "corne-core"
+version = "0.1.0"
+edition = "2024"
+description = "Núcleo do firmware: keycodes, camadas, keymap, motor de teclas, protocolo split e de configuração"
+publish = false
+
+[dependencies]
+heapless = "0.9"

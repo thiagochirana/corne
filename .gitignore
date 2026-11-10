@@ -1,0 +1,6 @@
+/target
+/firmware/target
+/out
+
+# Segredos das macros (ENV(NOME) no macros.kbd). Nunca vai para o git.
+/secrets.env

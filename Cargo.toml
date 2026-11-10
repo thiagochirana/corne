@@ -1,0 +1,11 @@
+[workspace]
+resolver = "3"
+# Crates que rodam/testam no PC. O firmware (pasta firmware/) é um workspace
+# separado porque compila para o RP2040 (thumbv6m-none-eabi).
+members = [
+    "crates/corne-core",
+    "crates/corne-rgb",
+    "crates/corne-oled",
+    "crates/corne-preview",
+]
+exclude = ["firmware"]

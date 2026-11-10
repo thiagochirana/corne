@@ -1,0 +1,9 @@
+[package]
+name = "corne-oled"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+corne-core = { path = "../corne-core" }
+embedded-graphics = "0.8"

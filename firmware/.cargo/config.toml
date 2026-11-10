@@ -1,0 +1,14 @@
+[build]
+target = "thumbv6m-none-eabi"
+
+[target.thumbv6m-none-eabi]
+# `cargo run --release --features left` gera e grava o .uf2 (requer
+# `cargo install elf2uf2-rs` e a unidade RPI-RP2 montada). No WSL2 a unidade
+# não aparece; use ../scripts/build.sh e copie o .uf2 pelo Windows.
+runner = "elf2uf2-rs -d"
+rustflags = [
+  "-C", "link-arg=--nmagic",
+  "-C", "link-arg=-Tlink.x",
+  "-C", "link-arg=-Tlink-rp.x",
+  "-C", "no-vectorize-loops",
+]

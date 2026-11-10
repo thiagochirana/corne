@@ -1,0 +1,11 @@
+[package]
+name = "corne-preview"
+version = "0.1.0"
+edition = "2024"
+description = "Pré-visualização dos efeitos de RGB e OLED no terminal, sem gravar o teclado"
+publish = false
+
+[dependencies]
+corne-core = { path = "../corne-core" }
+corne-rgb = { path = "../corne-rgb" }
+corne-oled = { path = "../corne-oled" }

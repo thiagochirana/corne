@@ -1,0 +1,47 @@
+// =============================================================================
+//  Layout do Corne 3x6+3
+// =============================================================================
+//
+//  Cada camada começa com [nome] e tem 42 teclas: 3 linhas de 12 e, por fim,
+//  os 6 polegares. A quebra de linha é só visual; o que importa é a ordem.
+//  Comentários começam com //.
+//
+//  Teclas e ações disponíveis:
+//    A..Z  0..9  F1..F12  ENT ESC BSPC TAB SPC DEL INS HOME END PGUP PGDN
+//    LEFT DOWN UP RGHT  - = [ ] \ ; ' ` , . /  CAPS PSCR MUTE VOLU VOLD APP
+//    ! @ # $ % ^ & * ( ) UNDS + { } | : " ~ < > ?   (símbolos com shift)
+//    LCTL LSFT LALT LGUI RCTL RSFT RALT RGUI
+//    ___  transparente (usa a camada de baixo)     XXX  nada
+//    MO(camada)  segura = camada ativa             TG(camada) liga/desliga
+//    TO(camada)  vai para a camada                 DF(camada) troca a base
+//    LT(camada, TECLA)  toque = tecla, segura = camada
+//    MT(LSFT, TECLA) ou LSFT_T(TECLA)  toque = tecla, segura = modificador
+//    C(X) S(X) A(X) G(X) RA(X)  atalho com modificador, ex.: C(S(TAB))
+//    RGB_TOG RGB_MOD RGB_RMOD RGB_HUI RGB_HUD RGB_SAI RGB_SAD RGB_VAI RGB_VAD
+//    RGB_SPI RGB_SPD RGB_THEME   OLED_TOG OLED_NEXT OLED_PREV   BOOT REBOOT
+//
+//  Camadas podem ser referenciadas pelo nome, ex.: MO(nav).
+
+[base]
+TAB    Q    W    E    R    T          Y    U    I    O    P    BSPC
+LCTL   A    S    D    F    G          H    J    K    L    ;    '
+LSFT   Z    X    C    V    B          N    M    ,    .    /    ESC
+               LGUI MO(nav) ENT     SPC MO(sym) RALT
+
+[nav]
+TAB    1    2    3    4    5          6    7    8    9    0    BSPC
+LCTL   XXX  XXX  XXX  XXX  XXX        LEFT DOWN UP   RGHT XXX  XXX
+LSFT   XXX  XXX  XXX  XXX  XXX        HOME PGDN PGUP END  XXX  XXX
+               LGUI ___     ENT     SPC MO(adjust) RALT
+
+[sym]
+TAB    !    @    #    $    %          ^    &    *    (    )    BSPC
+LCTL   XXX  XXX  XXX  XXX  XXX        -    =    [    ]    \    `
+LSFT   XXX  XXX  XXX  XXX  XXX        UNDS +    {    }    |    ~
+               LGUI MO(adjust) ENT  SPC ___     RALT
+
+[adjust]
+BOOT     XXX     XXX     XXX     XXX     XXX         XXX  XXX  XXX  XXX  XXX  BOOT
+RGB_TOG  RGB_HUI RGB_SAI RGB_VAI RGB_SPI RGB_MOD     OLED_NEXT XXX XXX XXX XXX XXX
+RGB_THEME RGB_HUD RGB_SAD RGB_VAD RGB_SPD RGB_RMOD   OLED_PREV XXX XXX XXX XXX OLED_TOG
+               LGUI ___ ENT        SPC ___ RALT

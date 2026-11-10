@@ -1,0 +1,62 @@
+// =============================================================================
+//  Macros: uma sequência de teclas tocada por uma tecla ou por um combo
+// =============================================================================
+//
+//  Cada macro começa com [nome] e vai até a próxima. Para usar:
+//    no keymap.kbd:   MACRO(nome)            ex.:  MACRO(assinatura)
+//    no combos.kbd:   J K L => MACRO(nome)   ex.:  J K L => MACRO(assinatura)
+//  (M(nome) é a forma curta, faz o mesmo.)
+//
+//  Passos (separados por espaço, podem ocupar várias linhas):
+//    "texto"          digita o texto, com acentos e ç (usa o host do keymap.kbd)
+//    'texto'          o mesmo, com aspas simples (bom quando o texto tem ")
+//                     escapes: \"  \'  \\  \n (Enter)  \t (Tab)
+//    '                um apóstrofo sozinho é a tecla do apóstrofo
+//    ESC  CTRL(Z)  !  toca a tecla (aperta e solta), com modificadores
+//    DOWN(SHIFT)      segura uma tecla      UP(SHIFT)  solta
+//                     (o que ficar segurado é solto no fim da macro)
+//    WAIT(100)        espera 100 ms (até 8191)
+//    ENV(NOME)        digita o valor de NOME do secrets.env (senhas, PINs...).
+//                     O secrets.env fica fora do git; o modelo é o secrets.env.example.
+//                     Se NOME não existir lá, o build para com erro (sem mostrar valores).
+//
+//  A quebra de linha do arquivo NÃO digita Enter: use ENT ou \n.
+//  Comentários com // (fora das aspas).
+//  Enquanto a macro toca, as teclas que você apertar esperam e saem depois.
+//
+//  Confira com: make keymap
+
+// Espera entre uma tecla e a próxima (ms). 0 = o mais rápido possível
+// (~500 letras por segundo). Aumente se algum programa perder letras.
+delay = 10
+
+[assinatura]
+"Atenciosamente," ENT "Seu Nome"
+
+[ola]
+"Olá! Tudo bem? Até já, ação concluída."
+
+[seta]
+" => "
+
+// Ctrl+Shift+Esc: Gerenciador de Tarefas do Windows
+[tarefas]
+CTRL(SHIFT(ESC))
+
+// Win+Shift+S: recorte de tela do Windows
+[print]
+DOWN(WIN) DOWN(SHIFT) S UP(SHIFT) UP(WIN)
+
+// Seleciona a linha inteira e copia
+[copia_linha]
+HOME SHIFT(END) WAIT(20) CTRL(C)
+
+// personal with env
+[small]
+ENV(SMALL)
+
+[long]
+ENV(LONG)
+
+[all_info]
+ENV(ALL_INFO)
