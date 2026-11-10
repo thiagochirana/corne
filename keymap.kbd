@@ -17,10 +17,12 @@
 //    MO(camada)  segura = camada ativa             TG(camada) liga/desliga
 //    TO(camada)  vai para a camada                 DF(camada) troca a base
 //    LT(camada, TECLA)  toque = tecla, segura = camada (aceita ? ! etc.)
-//    MT(SHIFT, TECLA) ou SHIFT_T(TECLA)  toque = tecla, segura = modificador
+//    MT(SHIFT, TECLA) ou SHIFT_T(TECLA)  toque = tecla, seg?ura = modificador
 //    CTRL(X) SHIFT(X) ALT(X) WIN(X) ALTGR(X)  atalho, ex.: CTRL(SHIFT(TAB))
 //    RGB_TOG RGB_MOD RGB_RMOD RGB_HUI RGB_HUD RGB_SAI RGB_SAD RGB_VAI RGB_VAD
 //    RGB_SPI RGB_SPD RGB_THEME   OLED_TOG OLED_NEXT OLED_PREV   BOOT REBOOT
+//    OLED_NEXT_RIGHT OLED_PREV_RIGHT   troca a cena só do OLED direito
+//    OLED_NEXT_LEFT  OLED_PREV_LEFT    troca a cena só do OLED esquerdo
 //
 //  Camadas podem ser referenciadas pelo nome, ex.: MO(numbers).
 //  MACRO(nome) toca uma macro do macros.kbd, ex.: MACRO(assinatura).
@@ -58,6 +60,6 @@ CTRL    XXX  XXX  XXX  XXX  XXX       UNDS  +    {    }    |    TO(base)
 
 [setup]
 BOOT     XXX     XXX     XXX     XXX     XXX         XXX  XXX  XXX  XXX  XXX  BOOT
-RGB_TOG  RGB_HUI RGB_SAI RGB_VAI RGB_SPI RGB_MOD     OLED_NEXT XXX XXX XXX XXX XXX
-RGB_THEME RGB_HUD RGB_SAD RGB_VAD RGB_SPD RGB_RMOD   OLED_PREV OLED_TOG XXX XXX XXX TO(base)
+RGB_TOG  RGB_HUI RGB_SAI RGB_VAI RGB_SPI RGB_MOD     OLED_NEXT OLED_NEXT_RIGHT XXX XXX XXX XXX
+RGB_THEME RGB_HUD RGB_SAD RGB_VAD RGB_SPD RGB_RMOD   OLED_PREV OLED_TOG OLED_PREV_RIGHT XXX XXX TO(base)
                                       ___ ___ ___        ___ ___ ___

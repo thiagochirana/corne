@@ -131,7 +131,8 @@ async fn main(spawner: Spawner) {
         use embassy_rp::multicore::{Stack, spawn_core1};
         use static_cell::StaticCell;
 
-        static mut CORE1_STACK: Stack<8192> = Stack::new();
+        // 16 KB: as cenas do OLED guardam o estado das animações (fogo, fogos...).
+        static mut CORE1_STACK: Stack<16384> = Stack::new();
         static EXECUTOR1: StaticCell<Executor> = StaticCell::new();
 
         #[cfg(feature = "rgb")]

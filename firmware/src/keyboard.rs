@@ -81,7 +81,10 @@ fn run_command(c: Command) {
         #[cfg(feature = "rgb")]
         Command::Rgb(cmd) => shared::update_state(|s| corne_rgb::apply_cmd(&mut s.settings, cmd)),
         #[cfg(feature = "oled")]
-        Command::Oled(cmd) => shared::update_state(|s| corne_oled::apply_cmd(&mut s.settings, cmd)),
+        Command::Oled(cmd) => shared::update_state(|s| {
+            let counts = (user_config::oled::LEFT_SCENES.len(), user_config::oled::RIGHT_SCENES.len());
+            corne_oled::apply_cmd(&mut s.settings, cmd, counts)
+        }),
         Command::Bootloader => crate::enter_bootloader(),
         Command::Reboot => cortex_m::peripheral::SCB::sys_reset(),
         Command::User(n, pressed) => user_config::on_user_action(n, pressed),

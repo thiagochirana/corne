@@ -15,7 +15,10 @@ pub struct Settings {
     pub rgb_val: u8,
     pub rgb_speed: u8,
     pub oled_on: bool,
+    /// Cena do OLED esquerdo (posição na lista de cenas dele).
     pub oled_scene: u8,
+    /// Cena do OLED direito.
+    pub oled_scene_right: u8,
 }
 
 impl Default for Settings {
@@ -35,6 +38,7 @@ impl Settings {
         rgb_speed: 128,
         oled_on: true,
         oled_scene: 0,
+        oled_scene_right: 0,
     };
 }
 
@@ -102,7 +106,7 @@ impl KeyboardState {
             s.rgb_val,
             s.rgb_speed,
             s.oled_scene,
-            0,
+            s.oled_scene_right,
             0,
             0,
         ]
@@ -129,6 +133,7 @@ impl KeyboardState {
                 rgb_val: b[10],
                 rgb_speed: b[11],
                 oled_scene: b[12],
+                oled_scene_right: b[13],
             },
         }
     }

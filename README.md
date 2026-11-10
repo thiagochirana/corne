@@ -171,6 +171,24 @@ leitura: quem tiver o teclado na mão consegue copiar a memória, e quem apertar
 combo digita a senha. Use para segredos de baixo risco, deixe o combo numa
 camada específica e não termine a macro com `ENT`.
 
+### Cenas do OLED
+
+Cada lado tem sua lista de cenas (`LEFT_SCENES` e `RIGHT_SCENES` em
+`firmware/src/user_config.rs`) e sua própria posição nela:
+
+| Tecla | Troca |
+|---|---|
+| `OLED_NEXT` / `OLED_PREV` | os dois lados |
+| `OLED_NEXT_RIGHT` / `OLED_PREV_RIGHT` | só o direito (mostra o nome da cena por 2 s) |
+| `OLED_NEXT_LEFT` / `OLED_PREV_LEFT` | só o esquerdo |
+
+Cenas: `Status`, `WPM`, `Keys` (informação) e as animadas `Stars`, `Rain`,
+`Life`, `Plasma`, `Fire` (fogo que cresce ao digitar), `Burst` (cada tecla lança
+um fogo de artifício), `EQ` (equalizador que pula com as teclas), `Pong` (joga
+sozinho, acelera com o WPM), `Warp` (túnel 3D), `Blobs` (lava), `DNA` (hélice
+girando) e `Scope` (osciloscópio). Para ver no terminal: `make preview-scenes`
+(todas) ou `make preview-right` (troca só a direita, como `OLED_NEXT_RIGHT`).
+
 ### Acentos e ç
 
 O teclado manda posições de tecla e quem escolhe o caractere é o sistema. Por

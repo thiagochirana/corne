@@ -10,6 +10,7 @@
 //!   --effect N|nome   efeito de RGB (padrão: aurora)
 //!   --theme N         tema de cor (padrão: 0)
 //!   --theme-cycle     troca de tema a cada 3 s (mostra o aviso no OLED direito)
+//!   --scene-cycle     troca só a cena do OLED direito a cada 4 s (OLED_NEXT_RIGHT)
 //!   --scene-left  nome   cena do OLED esquerdo  (padrão: status)
 //!   --scene-right nome   cena do OLED direito   (padrão: stars)
 //!   --landscape       OLED em paisagem (padrão: retrato, como no Corne)
@@ -43,12 +44,14 @@ const KEYMAP: &str = include_str!("../../../keymap.kbd");
 const COMBOS: &str = include_str!("../../../combos.kbd");
 const MACROS: &str = include_str!("../../../macros.kbd");
 
-const SCENES: [Scene; 7] =
-    [Scene::Status, Scene::WpmGraph, Scene::Starfield, Scene::Rain, Scene::Life, Scene::Plasma, Scene::Keys];
+const SCENES: [Scene; 15] = Scene::ALL;
 
 fn scene_by_name(s: &str) -> Option<Scene> {
-    SCENES.iter().copied().find(|sc| sc.name().eq_ignore_ascii_case(s))
+    Scene::from_name(s)
 }
+
+/// Cenas animadas (todas menos Status, WPM e Keys): as do lado direito.
+const ANIMATED: &[Scene] = Scene::ALL.split_at(3).1;
 
 struct Opts {
     effect: u8,
@@ -62,6 +65,7 @@ struct Opts {
     frames: Option<u32>,
     show_keymap: bool,
     theme_cycle: bool,
+    scene_cycle: bool,
 }
 
 fn parse_args() -> Opts {
@@ -77,6 +81,7 @@ fn parse_args() -> Opts {
         frames: None,
         show_keymap: false,
         theme_cycle: false,
+        scene_cycle: false,
     };
     let args: Vec<String> = std::env::args().skip(1).collect();
     let mut i = 0;
@@ -102,6 +107,7 @@ fn parse_args() -> Opts {
             }
             "--theme" => o.theme = val(&mut i).parse().unwrap_or(0),
             "--theme-cycle" => o.theme_cycle = true,
+            "--scene-cycle" => o.scene_cycle = true,
             "--scene-left" => o.left = scene_by_name(&val(&mut i)).unwrap_or(Scene::Status),
             "--scene-right" => o.right = scene_by_name(&val(&mut i)).unwrap_or(Scene::Starfield),
             "--landscape" => o.orientation = Orientation::Landscape,
@@ -351,7 +357,7 @@ fn main() {
     let mut rgb_l = RgbEngine::new(Side::Left);
     let mut rgb_r = RgbEngine::new(Side::Right);
     let left_scenes: &'static [Scene] = Box::leak(Box::new([o.left]));
-    let right_scenes: &'static [Scene] = Box::leak(Box::new([o.right]));
+    let right_scenes: &'static [Scene] = if o.scene_cycle { ANIMATED } else { Box::leak(Box::new([o.right])) };
     let mut oled_l = OledEngine::new(Side::Left, left_scenes);
     // Como no firmware: o lado direito mostra os avisos (ex.: troca de tema).
     let mut oled_r = OledEngine::new(Side::Right, right_scenes).with_popups(true);
@@ -402,6 +408,10 @@ fn main() {
         state.wpm = wpm.update(now);
         if o.theme_cycle {
             state.settings.rgb_theme = o.theme.wrapping_add((now / 3000) as u8);
+        }
+        if o.scene_cycle {
+            // Só o lado direito troca; o esquerdo continua na mesma cena.
+            state.settings.oled_scene_right = ((now / 4000) as usize % right_scenes.len()) as u8;
         }
         state.mods = if held.is_some_and(|(k, _)| k.col == 0) { 0x02 } else { 0 };
 

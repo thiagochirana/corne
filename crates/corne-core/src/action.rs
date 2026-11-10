@@ -78,13 +78,26 @@ impl RgbCmd {
 #[repr(u8)]
 pub enum OledCmd {
     Toggle = 0,
+    /// Próxima cena nos dois lados.
     NextScene,
     PrevScene,
+    /// Próxima cena só no lado esquerdo / direito.
+    NextLeft,
+    PrevLeft,
+    NextRight,
+    PrevRight,
 }
 
 impl OledCmd {
-    const ALL: [(OledCmd, &'static str); 3] =
-        [(OledCmd::Toggle, "OLED_TOG"), (OledCmd::NextScene, "OLED_NEXT"), (OledCmd::PrevScene, "OLED_PREV")];
+    const ALL: [(OledCmd, &'static str); 7] = [
+        (OledCmd::Toggle, "OLED_TOG"),
+        (OledCmd::NextScene, "OLED_NEXT"),
+        (OledCmd::PrevScene, "OLED_PREV"),
+        (OledCmd::NextLeft, "OLED_NEXT_LEFT"),
+        (OledCmd::PrevLeft, "OLED_PREV_LEFT"),
+        (OledCmd::NextRight, "OLED_NEXT_RIGHT"),
+        (OledCmd::PrevRight, "OLED_PREV_RIGHT"),
+    ];
     fn from_u8(v: u8) -> Option<Self> {
         Self::ALL.get(v as usize).map(|(c, _)| *c)
     }

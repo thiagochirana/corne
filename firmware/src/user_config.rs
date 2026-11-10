@@ -58,18 +58,39 @@ pub const SETTINGS: Settings = Settings {
     rgb_val: 140,
     rgb_speed: 128,
     oled_on: true,
-    oled_scene: 0,
+    oled_scene: 0,       // posição em oled::SCENES do lado esquerdo
+    oled_scene_right: 0, // ... e do lado direito
 };
 
 #[cfg(feature = "oled")]
 pub mod oled {
     use corne_oled::{Orientation, Scene};
 
-    /// Cenas de cada lado, na ordem de OLED_NEXT. Os dois lados avançam juntos.
+    /// Cenas de cada lado, na ordem em que as teclas passam por elas:
+    ///   OLED_NEXT / OLED_PREV               os dois lados juntos
+    ///   OLED_NEXT_RIGHT / OLED_PREV_RIGHT   só o direito
+    ///   OLED_NEXT_LEFT / OLED_PREV_LEFT     só o esquerdo
+    /// Todas: Status WpmGraph Keys Starfield Rain Life Plasma Fire Fireworks
+    ///        Equalizer Pong Tunnel Metaballs Helix Scope (`make preview-scenes`).
+    pub static LEFT_SCENES: &[Scene] = &[Scene::Status, Scene::WpmGraph, Scene::Keys];
+    pub static RIGHT_SCENES: &[Scene] = &[
+        Scene::Fireworks,
+        Scene::Fire,
+        Scene::Tunnel,
+        Scene::Metaballs,
+        Scene::Helix,
+        Scene::Pong,
+        Scene::Equalizer,
+        Scene::Scope,
+        Scene::Starfield,
+        Scene::Rain,
+        Scene::Life,
+        Scene::Plasma,
+    ];
     #[cfg(feature = "left")]
-    pub static SCENES: &[Scene] = &[Scene::Status, Scene::WpmGraph, Scene::Keys];
+    pub static SCENES: &[Scene] = LEFT_SCENES;
     #[cfg(feature = "right")]
-    pub static SCENES: &[Scene] = &[Scene::Starfield, Scene::Rain, Scene::Life, Scene::Plasma];
+    pub static SCENES: &[Scene] = RIGHT_SCENES;
 
     /// Avisos na tela (ex.: nome do tema de RGB por 2 s ao trocar com RGB_THEME).
     /// Por padrão só no lado direito, que mostra menos informação.

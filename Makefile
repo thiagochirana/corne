@@ -23,7 +23,7 @@ OUT     := out
 ELF     := $(FW_DIR)/target/thumbv6m-none-eabi/release/corne-fw
 PREVIEW := target/release/corne-preview
 EFFECTS := solid gradient breath rainbow aurora plasma ripple heat stars test
-SCENES  := status wpm stars rain life plasma keys
+SCENES  := status wpm keys stars rain life plasma fire burst eq pong warp blobs dna scope
 
 PREVIEW_ARGS := $(if $(EFFECT),--effect $(EFFECT)) \
                 $(if $(THEME),--theme $(THEME)) \
@@ -40,7 +40,7 @@ PREVIEW_ARGS := $(if $(EFFECT),--effect $(EFFECT)) \
 .DEFAULT_GOAL := help
 
 .PHONY: help setup test check clippy fmt fmt-check keymap ci \
-        preview preview-list preview-tour preview-scenes preview-themes preview-leds preview-layers \
+        preview preview-list preview-tour preview-scenes preview-right preview-themes preview-leds preview-layers \
         build left right build-rgb build-oled build-bare size \
         flash-left flash-right clean
 
@@ -106,6 +106,9 @@ preview-scenes: $(PREVIEW) ## Passa por todas as cenas do OLED (~4 s cada)
 	@for s in $(SCENES); do \
 	  $(PREVIEW) --scene-left $$s --scene-right $$s $(if $(LANDSCAPE),--landscape) --frames 120 || exit 1; \
 	done
+
+preview-right: $(PREVIEW) ## Troca só a cena do OLED direito a cada 4 s (como OLED_NEXT_RIGHT)
+	@$(PREVIEW) --scene-cycle $(if $(LANDSCAPE),--landscape) $(if $(FRAMES),--frames $(FRAMES))
 
 preview-themes: $(PREVIEW) ## Troca de tema a cada 3 s: mostra o aviso no OLED direito
 	@$(PREVIEW) --theme-cycle $(if $(EFFECT),--effect $(EFFECT)) $(if $(LANDSCAPE),--landscape) $(if $(FRAMES),--frames $(FRAMES))

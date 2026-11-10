@@ -2,8 +2,7 @@ use corne_core::layout::{KeyPos, Side};
 use corne_core::state::KeyboardState;
 use corne_oled::{FrameBuffer, IDLE_OFF_MS, OledEngine, OledFrame, Orientation, Scene};
 
-const SCENES: &[Scene] =
-    &[Scene::Status, Scene::WpmGraph, Scene::Starfield, Scene::Rain, Scene::Life, Scene::Plasma, Scene::Keys];
+const SCENES: &[Scene] = &Scene::ALL;
 
 #[test]
 fn every_scene_renders_in_every_orientation() {
@@ -17,6 +16,7 @@ fn every_scene_renders_in_every_orientation() {
                 let mut fb = FrameBuffer::new(o);
                 let mut st = KeyboardState::default();
                 st.settings.oled_scene = i as u8;
+                st.settings.oled_scene_right = i as u8;
                 for frame in 0..400u32 {
                     let now = frame * 33 + 4_294_000_000; // atravessa o estouro do u32
                     if frame % 5 == 0 {
@@ -87,4 +87,44 @@ fn theme_popup_shows_for_two_seconds_only_where_enabled() {
         let after = 100 + POPUP_MS;
         assert_eq!(draw(true, &[(0, 0), (100, 1), (after, 1)]), draw(false, &[(0, 0), (100, 1), (after, 1)]));
     }
+}
+
+#[test]
+fn right_only_commands_leave_the_left_scene_alone() {
+    use corne_core::action::OledCmd::*;
+    use corne_core::state::Settings;
+    let counts = (3, 12);
+    let mut s = Settings::DEFAULT;
+    corne_oled::apply_cmd(&mut s, NextRight, counts);
+    corne_oled::apply_cmd(&mut s, NextRight, counts);
+    assert_eq!((s.oled_scene, s.oled_scene_right), (0, 2));
+    corne_oled::apply_cmd(&mut s, NextLeft, counts);
+    assert_eq!((s.oled_scene, s.oled_scene_right), (1, 2));
+    // OLED_NEXT continua trocando os dois.
+    corne_oled::apply_cmd(&mut s, NextScene, counts);
+    assert_eq!((s.oled_scene, s.oled_scene_right), (2, 3));
+    // Voltar da primeira cena vai para a última da lista de cada lado.
+    let mut s = Settings::DEFAULT;
+    corne_oled::apply_cmd(&mut s, PrevScene, counts);
+    assert_eq!((s.oled_scene, s.oled_scene_right), (2, 11));
+
+    // Cada lado lê o seu número de cena.
+    let l = OledEngine::new(Side::Left, &[Scene::Status, Scene::Keys]);
+    let r = OledEngine::new(Side::Right, &[Scene::Fire, Scene::Pong, Scene::Helix]);
+    let s = Settings { oled_scene: 1, oled_scene_right: 2, ..Settings::DEFAULT };
+    assert_eq!((l.scene(&s), r.scene(&s)), (Scene::Keys, Scene::Helix));
+
+    // A cena direita vai pelo link para o periférico.
+    let st = KeyboardState { settings: s, ..Default::default() };
+    assert_eq!(KeyboardState::from_wire(&st.to_wire()).settings.oled_scene_right, 2);
+}
+
+#[test]
+fn scene_names_are_unique_and_parse() {
+    for s in Scene::ALL {
+        assert_eq!(Scene::from_name(&s.name().to_lowercase()), Some(s));
+    }
+    let mut names: Vec<_> = Scene::ALL.iter().map(|s| s.name()).collect();
+    names.dedup();
+    assert_eq!(names.len(), Scene::ALL.len());
 }
