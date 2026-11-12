@@ -116,8 +116,9 @@ impl ConfigTarget for Target<'_> {
     }
 
     fn save(&mut self) -> bool {
-        // Ainda não implementado: gravar keymap e Settings nos 64 KB reservados da flash.
-        false
+        // Grava as configurações de RGB/OLED agora (o keymap ainda não é salvo).
+        crate::persist::SAVE_NOW.signal(());
+        user_config::SAVE_SETTINGS
     }
 
     fn bootloader(&mut self) {

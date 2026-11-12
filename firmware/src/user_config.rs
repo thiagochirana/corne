@@ -48,7 +48,18 @@ pub const SPLIT_BAUD: u32 = 460_800;
 /// modo de gravação (aparece a unidade RPI-RP2). Um toque só apenas reinicia.
 pub const DOUBLE_TAP_MS: u64 = 500;
 
+/// Guardar na flash o que os comandos RGB_* e OLED_* mudam (efeito, tema,
+/// cor, brilho, velocidade, liga/desliga e cenas), para voltar igual ao religar.
+/// `false`: sempre começa com `SETTINGS`.
+pub const SAVE_SETTINGS: bool = true;
+
+/// Espera (ms) sem novas mudanças antes de gravar. Evita gravar a cada passo
+/// enquanto você ajusta o brilho, por exemplo.
+pub const SAVE_DELAY_MS: u64 = 3000;
+
 /// Valores iniciais do RGB e do OLED (os comandos RGB_* e OLED_* mudam em uso).
+/// Se você mudar algum valor aqui e regravar, o que estava salvo na flash é
+/// descartado e estes valores passam a valer.
 pub const SETTINGS: Settings = Settings {
     rgb_on: true,
     rgb_effect: 4, // Aurora (veja corne_rgb::effects::EFFECTS)

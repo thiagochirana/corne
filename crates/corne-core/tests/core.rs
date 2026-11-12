@@ -1098,3 +1098,78 @@ fn secrets_env_file_and_env_steps() {
     let e = macros::parse_with_env("[a]\nENV(a-b)", Host::Abnt2, &env).err().unwrap().to_string();
     assert!(e.contains("nome inválido"), "{e}");
 }
+
+mod persist {
+    use corne_core::persist::{self, RECORD_LEN};
+    use corne_core::state::Settings;
+
+    const SLOTS: usize = 8;
+
+    fn changed() -> Settings {
+        Settings { rgb_effect: 7, rgb_val: 33, oled_scene_right: 5, oled_on: false, ..Settings::DEFAULT }
+    }
+
+    fn sector() -> Vec<[u8; RECORD_LEN]> {
+        vec![[0xFF; RECORD_LEN]; SLOTS]
+    }
+
+    fn scan(sec: &[[u8; RECORD_LEN]]) -> persist::Scan {
+        persist::scan(SLOTS, &Settings::DEFAULT, |i| sec[i])
+    }
+
+    #[test]
+    fn blank_sector_has_nothing_saved() {
+        let sec = sector();
+        assert_eq!(scan(&sec), persist::Scan { saved: None, next_slot: Some(0) });
+    }
+
+    #[test]
+    fn last_record_wins() {
+        let mut sec = sector();
+        sec[0] = persist::encode(&Settings::DEFAULT, &Settings::DEFAULT);
+        sec[1] = persist::encode(&changed(), &Settings::DEFAULT);
+        assert_eq!(scan(&sec), persist::Scan { saved: Some(changed()), next_slot: Some(2) });
+    }
+
+    #[test]
+    fn torn_write_is_ignored() {
+        let mut sec = sector();
+        sec[0] = persist::encode(&changed(), &Settings::DEFAULT);
+        // Faltou energia no meio do registro 1: só metade gravada.
+        let r = persist::encode(&Settings::DEFAULT, &Settings::DEFAULT);
+        sec[1][..RECORD_LEN / 2].copy_from_slice(&r[..RECORD_LEN / 2]);
+        assert_eq!(scan(&sec), persist::Scan { saved: Some(changed()), next_slot: Some(2) });
+    }
+
+    #[test]
+    fn full_sector_asks_for_erase() {
+        let sec = vec![persist::encode(&changed(), &Settings::DEFAULT); SLOTS];
+        assert_eq!(scan(&sec), persist::Scan { saved: Some(changed()), next_slot: None });
+    }
+
+    #[test]
+    fn new_firmware_defaults_discard_saved() {
+        let mut sec = sector();
+        let old_defaults = Settings { rgb_effect: 1, ..Settings::DEFAULT };
+        sec[0] = persist::encode(&changed(), &old_defaults);
+        assert_eq!(scan(&sec).saved, None);
+    }
+
+    #[test]
+    fn round_trip_every_field() {
+        let s = Settings {
+            rgb_on: false,
+            rgb_effect: 1,
+            rgb_theme: 2,
+            rgb_hue: 3,
+            rgb_sat: 4,
+            rgb_val: 5,
+            rgb_speed: 6,
+            oled_on: false,
+            oled_scene: 8,
+            oled_scene_right: 9,
+        };
+        let r = persist::encode(&s, &Settings::DEFAULT);
+        assert_eq!(persist::decode(&r), Some((persist::defaults_id(&Settings::DEFAULT), s)));
+    }
+}

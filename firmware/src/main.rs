@@ -19,6 +19,7 @@ mod board;
 mod keyboard;
 mod keymap;
 mod matrix;
+mod persist;
 mod shared;
 mod split;
 mod usb;
@@ -99,7 +100,11 @@ async fn main(spawner: Spawner) {
     spawner.spawn(double_tap_clear().unwrap());
 
     let side = user_config::SIDE;
-    shared::update_state(|s| s.settings = user_config::SETTINGS);
+    // Configurações de RGB/OLED: as últimas salvas na flash, ou as de user_config.
+    let mut flash = persist::Storage::new_blocking(p.FLASH);
+    let settings = persist::load(&mut flash);
+    shared::update_state(|s| s.settings = settings);
+    spawner.spawn(persist::persist_task(flash, settings).unwrap());
 
     // --- Matriz ---
     let pins = board::matrix_pins!(p);

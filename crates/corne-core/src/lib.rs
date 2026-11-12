@@ -12,6 +12,7 @@
 //! - [`engine`]: motor de teclas (camadas, tap-hold, relatório HID).
 //! - [`debounce`], [`wpm`]: utilitários de matriz e estatística.
 //! - [`state`]: estado compartilhado com os complementos (RGB, OLED).
+//! - [`persist`]: formato das configurações gravadas na flash.
 //! - [`split`]: protocolo entre as duas metades.
 //! - [`protocol`]: configuração ao vivo pelo PC (base para um "Vial" próprio).
 #![no_std]
@@ -30,6 +31,7 @@ pub mod keymap_file;
 pub mod layer;
 pub mod layout;
 pub mod macros;
+pub mod persist;
 pub mod protocol;
 pub mod split;
 pub mod state;

@@ -189,6 +189,18 @@ sozinho, acelera com o WPM), `Warp` (túnel 3D), `Blobs` (lava), `DNA` (hélice
 girando) e `Scope` (osciloscópio). Para ver no terminal: `make preview-scenes`
 (todas) ou `make preview-right` (troca só a direita, como `OLED_NEXT_RIGHT`).
 
+### Configurações salvas (RGB e OLED)
+
+O que as teclas `RGB_*` e `OLED_*` mudam (efeito, tema, cor, brilho,
+velocidade, liga/desliga e a cena de cada OLED) fica gravado na flash e volta
+igual quando você religa o teclado. A gravação acontece 3 s depois da última
+mudança, nas duas metades, então tanto faz qual lado vai na USB.
+
+- Regravar o firmware (`.uf2`) **não** apaga o que foi salvo.
+- Se você mudar os valores iniciais (`SETTINGS` em `firmware/src/user_config.rs`)
+  e regravar, o que estava salvo é descartado e os valores novos passam a valer.
+- Para desligar: `SAVE_SETTINGS = false`. A espera fica em `SAVE_DELAY_MS`.
+
 ### Acentos e ç
 
 O teclado manda posições de tecla e quem escolhe o caractere é o sistema. Por
@@ -215,8 +227,9 @@ A base já está pronta no core:
 
 Ainda falta:
 
-1. Gravar keymap e configurações na flash (64 KB já reservados no `memory.x`).
-   Por enquanto, alterações feitas pelo protocolo se perdem ao reiniciar.
+1. Gravar o keymap na flash. As configurações de RGB/OLED já são salvas
+   (veja acima, e o comando `Save` do protocolo grava na hora); as teclas
+   alteradas pelo protocolo ainda se perdem ao reiniciar.
 2. Um configurador no PC (CLI ou página web com WebHID) que use o protocolo.
 
 ## Pontos para conferir no hardware
